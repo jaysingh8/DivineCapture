@@ -2,7 +2,10 @@ import React from 'react'
 import { createBrowserRouter } from 'react-router'
 import Register from '../features/auth/page/register'
 import Login from '../features/auth/page/Login'
-import Detailed from '../features/detials/Detailed'
+import Profile from '../features/serviceProvider/pages/Profile'
+import Portfolio from '../features/serviceProvider/pages/Portfolio'
+import Default from '../features/serviceProvider/pages/Default'
+
 
 
 export const routes =createBrowserRouter([
@@ -13,8 +16,14 @@ export const routes =createBrowserRouter([
         path:"/login",
         element:<Login/>
     },{
+        path:"/profile",
+        element:<Profile/>
+    },{
+        path:"/portfolio",
+        element:<Portfolio/>
+    },{
         path:"/",
-        element:<Detailed/>
+        element:<Default/>
     }
 ])
 

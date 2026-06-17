@@ -4,7 +4,8 @@ import bcryptjs from "bcryptjs";
 const userSchema = new mongoose.Schema({
     email:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     fullname:{
         type:String,
@@ -12,22 +13,31 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type:String,
-        required:true
+        required:false
     },
     contact:{
         type:String,
-        required:true
+        required:false
     },
     role:{
         type:String,
         enum:["user","getter"],
         default:"user"
+    },
+    googleId:{
+        type:String,
+        unique:true,
+        sparse:true
+    },
+    isVerified:{
+        type:Boolean,
+        default:false
     }
 })
 
 
 userSchema.pre("save", async function () {
-    if(!this.isModified("password")) return;
+    if(!this.isModified("password") || !this.password) return;
     const hash = await bcryptjs.hash(this.password,10)
     this.password = hash
     
@@ -38,4 +48,4 @@ userSchema.methods.comparePassword = async function(password) {
 }
 
 const userModel = mongoose.model("user",userSchema)
-export default userModel  
+export default userModel

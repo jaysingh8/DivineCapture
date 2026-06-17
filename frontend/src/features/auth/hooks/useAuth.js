@@ -29,9 +29,10 @@ export const useAuth = () => {
             dispatch(setLoading(true))
 
             const data = await login({email,password})
+            dispatch(setUser(data.user))
             return data.user
         } catch (error) {
-            console.error("register failed", error);
+            console.error("login failed", error);
             throw error;
         }finally{
             dispatch(setLoading(false))
@@ -42,6 +43,7 @@ export const useAuth = () => {
         try {
             dispatch(setLoading(true))
             const data = await getMe();
+            dispatch(setUser(data.user))
             return data.user
         } catch (error) {
             throw error

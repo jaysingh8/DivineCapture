@@ -19,6 +19,9 @@ if(!process.env.GOOGLE_AUTH_API){
 if(!process.env.GOOGLE_AUTH_SECRET){
     throw new Error("Google auth secret not define")
 }
+if(!process.env.IMAGEKIT_PRIVITE_KEY){
+    throw new Error("process.env.IMAGEKIT_PRIVITE_KEY not define")
+}
 
 
 
@@ -27,5 +30,7 @@ export const config = {
     MONGO_URI : process.env.MONGO_URI,
     JWT_SECRET : process.env.JWT_SECRET,
     GOOGLE_AUTH_API : process.env.GOOGLE_AUTH_API,
-    GOOGLE_AUTH_SECRET : process.env.GOOGLE_AUTH_SECRET
+    GOOGLE_AUTH_SECRET : process.env.GOOGLE_AUTH_SECRET,
+    FRONTEND_URL : process.env.FRONTEND_URL || "http://localhost:5173",
+    IMAGEKIT_PRIVITE_KEY : process.env.IMAGEKIT_PRIVITE_KEY
 }
