@@ -7,7 +7,11 @@ const profileSchema = new mongoose.Schema({
         required: true,
     },
 
-    profileImage: String,
+    profileImage: {
+        type: String,
+        default: "https://tse4.mm.bing.net/th/id/OIP.3U017h9GAnFM3aRkV-WLiwHaHa?r=0&cb=thfc1falcon2&rs=1&pid=ImgDetMain&o=7&rm=3"
+
+    },
     profession: {
         type: [String],
         enum: ["photographer", "videographer", "editor"],
@@ -51,7 +55,12 @@ const profileSchema = new mongoose.Schema({
             fileId: String
         }
     ],
-
+    status: {
+        type: String,
+        enum: ["active", "busy"],
+        default: "active",
+        required: true
+    },
     completedProfile: {
         type: Boolean,
         default: false,

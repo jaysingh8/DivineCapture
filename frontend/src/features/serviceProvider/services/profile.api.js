@@ -11,13 +11,7 @@ export async function profile({profession,bio,experience,city,state,address,equi
     return response.data
 }
 
-export async function portfolio({images}) {
-    const formData = new FormData();
-    
-    images.forEach((image) => {
-        formData.append('images', image);
-    });
-
+export async function portfolio(formData) {
     const response = await authApiInstance.post("/portfolio", formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -25,6 +19,27 @@ export async function portfolio({images}) {
     });
 
     return response.data;
+}
+
+export async function getProfile() {
+    const response = await authApiInstance.get("/getProfile")
+    return response.data
+    
+}
+
+export async function getAllProfile() {
+     const response = await authApiInstance.get("/")
+     return response.data
+}
+
+export async function profileDetails(profileId){
+    const response = await authApiInstance.get(`/profile/${profileId}`)
+    return response.data
+}
+
+export async function isActive(){
+    const response = await authApiInstance.patch("/isActive")
+    return response.data
 }
 
 export default authApiInstance

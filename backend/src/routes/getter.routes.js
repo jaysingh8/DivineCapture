@@ -1,7 +1,8 @@
 import Router from 'express'
 import { profileValidator } from '../validators/getter.validator.js';
 import { authenticateUser } from '../middleware/auth.middleware.js';
-import { portfolio, profile } from '../controllers/getter.controller.js';
+import { authorizeRoles } from '../middleware/authorize.middleware.js';
+import { getAllProfile, getProfile, isActive, portfolio, profile, profileDetail } from '../controllers/getter.controller.js';
 import multer from 'multer'
 
 
@@ -14,10 +15,16 @@ const upload = multer({
     }
 })
 
-router.post("/profile",authenticateUser,profileValidator ,profile)
+router.post("/profile", authenticateUser, authorizeRoles("getter"), profileValidator, profile)
 
-router.post("/portfolio",authenticateUser, upload.array('images', 3),portfolio)
+router.post("/portfolio", authenticateUser, authorizeRoles("getter"), upload.array('images', 3), portfolio)
+
+router.get("/getProfile", authenticateUser, getProfile)
+
+router.get("/", getAllProfile)
+router.get("/profile/:id" ,profileDetail)
 
 
+router.patch("/isActive",authenticateUser ,isActive)
 
-export default router  
+export default router

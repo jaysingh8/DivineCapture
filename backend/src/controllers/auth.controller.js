@@ -77,10 +77,18 @@ export const login = async (req,res)=>{
                 message:"email or password is incorrect"
             })
         }
+
+        if (!user.password) {
+            return res.status(401).json({
+                success:false,
+                message:"This account uses Google login. Please sign in with Google."
+            })
+        }
+
         const isMatch = await user.comparePassword(password)
         if(!isMatch){
             return res.status(401).json({
-                success:false,
+                success:false, 
                 message:"email or password is incorrect"
             })
         }
@@ -101,7 +109,7 @@ export const getMe = async(req,res)=>{
         res.status(200).json({
             message:"user fatch successfully",
             user:{
-                id:user.id,
+                id:user.id, 
                 email:user.email,
                 fullname:user.fullname,
                 contact:user.contact,

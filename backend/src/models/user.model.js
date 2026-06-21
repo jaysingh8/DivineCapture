@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
     isVerified:{
         type:Boolean,
         default:false
+    },
+    profileCompleted:{
+        type:Boolean,
+        default:false
     }
 })
 
@@ -47,5 +51,5 @@ userSchema.methods.comparePassword = async function(password) {
     return await bcryptjs.compare(password, this.password)   
 }
 
-const userModel = mongoose.model("user",userSchema)
+const userModel = mongoose.model("User",userSchema)
 export default userModel
