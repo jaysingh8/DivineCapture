@@ -84,7 +84,7 @@ const ServiceProviderHome = () => {
         </div>
 
         {/* Quick Stats */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 -mt-6 mb-8">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 -mt-6 mb-8">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
               <p className="text-[12px] font-medium text-slate-500 uppercase tracking-wide">Profile Views</p>

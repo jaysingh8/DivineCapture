@@ -23,7 +23,6 @@ async function sendToken(user , res, message) {
             fullname: user.fullname,
             role: user.role,
             isVerified: user.isVerified,
-            avatar: user.avatar
         }
     })
 }
@@ -144,9 +143,6 @@ export const googleCallback = async(req,res)=>{
     } else {
         // Update existing user with Google info
         user.googleId = id;
-        if (!user.avatar) {
-            user.avatar = profilePic;
-        }
         // Use fullname from Google if user didn't set one via email/password
         if (!user.fullname) {
             user.fullname = displayName;

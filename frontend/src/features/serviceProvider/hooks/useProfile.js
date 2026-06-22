@@ -1,16 +1,17 @@
 import { setAllProfiles, setLoading, setProfile } from "../state/profile.slice.js"
-import { profile, portfolio, getProfile, getAllProfile, profileDetails, isActive } from "../services/profile.api.js"
-import { useDispatch } from "react-redux"
+import { profile as createProfile, portfolio, getProfile, getAllProfile, profileDetails, isActive } from "../services/profile.api.js"
+import { useDispatch, useSelector } from "react-redux"
 
 
 export const useProfile = () => {
     const dispatch = useDispatch()
+    const { profile } = useSelector((state) => state.profile) // adjust this path if your slice shape differs
 
     async function handleProfile({ profession, bio, experience, city, state, address, equipments, profileImage }) {
 
         try {
             dispatch(setLoading(true))
-            const data = await profile({ profession, bio, experience, city, state, address, equipments, profileImage })
+            const data = await createProfile({ profession, bio, experience, city, state, address, equipments, profileImage })
             dispatch(setProfile(data.data))
             return data.data
         } catch (error) {
@@ -73,21 +74,37 @@ export const useProfile = () => {
             
         }
     }
+  async function handleIsActive() {
+    try {
+        let latitude;
+        let longitude;
 
-    async function handleIsActive() {
-        try {
-            const data = await isActive()
-            // Update the profile status in redux store
-            dispatch(setProfile({ ...data, status: data.status }))
-            // Re-fetch the full profile to keep state in sync
-            await handleGetProfile()
-            return data
-        } catch (error) {
-            console.error("Toggle status failed", error)
-            throw error
+        // Get location when going active (status will flip from offline to active)
+        if (navigator.geolocation) {
+            try {
+                const pos = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        timeout: 8000,
+                        enableHighAccuracy: true,
+                    });
+                });
+                latitude = pos.coords.latitude;
+                longitude = pos.coords.longitude;
+            } catch (geoError) {
+                console.warn("Geolocation unavailable, toggling without location:", geoError.code, geoError.message);
+            }
         }
-    }
 
+        const data = await isActive({ latitude, longitude });
+
+        // Refresh profile from server to get updated status
+        await handleGetProfile();
+        return data;
+    } catch (error) {
+        console.error("Toggle status failed", error);
+        throw error;
+    }
+}
     return { handleProfile, handlePortfolio, handleGetProfile ,handleGetAllProfile ,handleDetail, handleIsActive}
 
 }

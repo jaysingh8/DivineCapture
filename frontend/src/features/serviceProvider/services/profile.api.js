@@ -37,8 +37,8 @@ export async function profileDetails(profileId){
     return response.data
 }
 
-export async function isActive(){
-    const response = await authApiInstance.patch("/isActive")
+export async function isActive({ latitude, longitude } = {}){
+    const response = await authApiInstance.patch("/isActive", { latitude, longitude })
     return response.data
 }
 

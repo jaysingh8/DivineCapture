@@ -76,7 +76,7 @@ const BrowseProfiles = () => {
         </button>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 -mt-12 sm:-mt-20 relative z-10 pb-10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 -mt-8 sm:-mt-20 relative z-10 pb-10">
         {/* ─── Profile Card ─── */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
           {/* Avatar + Name Row */}
@@ -84,7 +84,7 @@ const BrowseProfiles = () => {
             <div className="flex flex-col sm:flex-row items-center sm:items-center gap-4">
               <div className="relative shrink-0">
                 <img
-                  src={profile.profileImage || "https://ui-avatars.com/api/?name=" + encodeURIComponent(profile.name || "U") + "&background=6366f1&color=fff&size=200"}
+                  src={profile.profileImage || "https://ui-avatars.com/api/?name=" + encodeURIComponent(profile.user.fullname || "U") + "&background=6366f1&color=fff&size=200"}
                   alt={profile.name}
                   className="w-28 h-28 sm:w-36 sm:h-36 rounded-xl object-cover border-[4px] border-white shadow-lg bg-white"
                 />
@@ -93,7 +93,7 @@ const BrowseProfiles = () => {
 
               <div className="flex-1 text-center sm:text-left pt-2 sm:pt-0 sm:pb-1">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  {profile.name}
+                  {profile.user.fullname}
                 </h1>
                 <p className="text-blue-600 font-medium text-sm sm:text-base mt-0.5">
                   {Array.isArray(profile.profession)

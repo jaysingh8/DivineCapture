@@ -20,7 +20,7 @@ const Register = () => {
     e.preventDefault()
     try {
       await handleRegister({ ...formData, isGetter: formData.isGetter })
-      navigate('/')
+      navigate('/profile')
     } catch (error) {
       console.error('Registration failed', error)
     }

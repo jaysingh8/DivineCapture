@@ -50,7 +50,7 @@ const Profile = () => {
         } catch (error) { console.error("Profile submission failed", error) }
     }
 
-    const nextStep = () => setStep((prev) => Math.min(prev + 1, 3))
+    const nextStep = () => setStep((prev) => Math.min(prev + 1, 2))
     const prevStep = () => setStep((prev) => Math.max(prev - 1, 1))
     const isStepValid = () => {
         if (step === 1) return formData.professions.length > 0 && formData.bio

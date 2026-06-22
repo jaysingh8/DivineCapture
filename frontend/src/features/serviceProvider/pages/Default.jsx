@@ -97,52 +97,8 @@ const Default = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* ===== NAVBAR ===== */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img
-              src="/divine_capture_logo.svg"
-              alt="DivineCapture"
-              className="h-9 w-auto cursor-pointer"
-              onClick={() => navigate('/')}
-            />
-            <span className="text-lg font-semibold text-slate-900">DivineCapture</span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {user ? (
-              <>
-                <span className="text-sm text-slate-600 hidden sm:block">{user.fullname}</span>
-                <button
-                  onClick={() => navigate(user.role === 'getter' ? '/dashboard' : '/findProfile')}
-                  className="h-[36px] px-4 text-[12px] font-semibold rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:shadow-md hover:shadow-blue-500/20 transition-all"
-                >
-                  Dashboard
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => navigate('/login')}
-                  className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
-                >
-                  Sign in
-                </button>
-                <button
-                  onClick={() => navigate('/register')}
-                  className="h-[36px] px-5 text-[12px] font-semibold rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:shadow-md hover:shadow-blue-500/20 transition-all active:scale-[0.98]"
-                >
-                  Get Started
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
-
       {/* ===== HERO ===== */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pt-16">
+      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 pt-16 md:pt-16">
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232563eb' fill-opacity='0.5'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
         <div className="absolute top-1/4 right-1/4 w-72 h-72 rounded-full bg-blue-500/10 blur-[100px] animate-pulse" />
         <div className="absolute bottom-1/4 left-1/4 w-96 h-96 rounded-full bg-blue-500/5 blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />

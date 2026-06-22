@@ -1,41 +1,30 @@
 import profileModel from "../models/profile.model.js";
 import userModel from "../models/user.model.js";
-import { uploadFile } from "../services/storage.sevices.js";
+import { uploadFile } from "../services/storage.services.js";
 
 export const profile = async (req, res) => {
-
-    const { profession, bio, experience, city, state, address, equipments, completedProfile, profileImage } = req.body;
+    const {
+        profession, bio, experience, city, state,
+        address, equipments, profileImage, pricePerHour
+    } = req.body;
 
     try {
-
-        const user = req.user
-
-        const userDoc = await userModel.findById(user._id)
+        const user = req.user;
+        const userDoc = await userModel.findById(user._id);
 
         if (!userDoc) {
-            return res.status(401).json({
-                message: "user not found",
-                success: false
-            })
+            return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        if (userDoc.role == "user") {
-            return res.status(401).json({
-                message: "Wrong details filled",
-                success: false
-            })
-
+        if (userDoc.role === "user") {
+            return res.status(403).json({ success: false, message: "Users cannot create a provider profile" });
         }
-
 
         if (userDoc.isVerified) {
-            return res.status(401).json({
-                message: "already profile created",
-                success: false
-            })
+            return res.status(409).json({ success: false, message: "Profile already created" });
         }
 
-        const profile = await profileModel.create({
+        const newProfile = await profileModel.create({
             user: userDoc._id,
             profession,
             bio,
@@ -45,39 +34,31 @@ export const profile = async (req, res) => {
             address,
             equipments,
             profileImage,
+            pricePerHour,
             completedProfile: true
+        });
 
-        })
-
-        await userDoc.updateOne({
-            isVerified: true
-        })
+        await userDoc.updateOne({ isVerified: true });
 
         return res.status(201).json({
-            message: "Profile created successfully",
             success: true,
-            data: profile
-
-        })
+            message: "Profile created successfully",
+            data: newProfile
+        });
 
     } catch (error) {
-        console.log(error);
-
-        res.status(500).json({
-            message: "server error",
-
-        })
-
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Server error" });
     }
-
-
-
-}
-
+};
 
 export const portfolio = async (req, res) => {
     try {
         const user = req.user;
+
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ success: false, message: "No files uploaded" });
+        }
 
         const uploadedImages = await Promise.all(
             req.files.map(async (file) => {
@@ -85,70 +66,48 @@ export const portfolio = async (req, res) => {
                     buffer: file.buffer,
                     fileName: file.originalname,
                 });
-
-                return {
-                    url: result.url,
-                    fileId: result.fileId,
-                };
+                return { url: result.url, fileId: result.fileId };
             })
         );
 
-        const profile = await profileModel.findOneAndUpdate(
+        const updatedProfile = await profileModel.findOneAndUpdate(
             { user: user._id },
-            {
-                $push: {
-                    portfolioImages: { $each: uploadedImages }
-                }
-            },
+            { $push: { portfolioImages: { $each: uploadedImages } } },
             { new: true }
         );
 
-        if (!profile) {
-            return res.status(404).json({
-                success: false,
-                message: "Profile not found"
-            });
+        if (!updatedProfile) {
+            return res.status(404).json({ success: false, message: "Profile not found" });
         }
 
         return res.status(200).json({
             success: true,
             message: "Portfolio images uploaded successfully",
-            data: profile
+            data: updatedProfile
         });
 
     } catch (error) {
-        console.log(error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Server Error"
-        });
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Server error" });
     }
-}
-
+};
 
 export const getProfile = async (req, res) => {
     try {
         const user = req.user;
-        const profileData = await profileModel.findOne({
-            user: user._id
-        });
+        const profileData = await profileModel.findOne({ user: user._id });
 
         if (!profileData) {
-            return res.status(404).json({
-                message: "user not found",
-                success: false
-            })
+            return res.status(404).json({ success: false, message: "Profile not found" });
         }
 
-                return res.status(201).json({
-            message: "user fatch successfully",
+        return res.status(200).json({
+            success: true,
+            message: "Profile fetched successfully",
             userDetail: {
-
-                id: user.id,
+                id: user._id,
                 email: user.email,
                 fullname: user.fullname,
-                name: user.fullname,
                 contact: user.contact,
                 profession: profileData.profession,
                 bio: profileData.bio,
@@ -161,88 +120,102 @@ export const getProfile = async (req, res) => {
                 portfolioImages: profileData.portfolioImages,
                 pricePerHour: profileData.pricePerHour,
                 status: profileData.status,
+                isAvailable: profileData.isAvailable,
+                location: profileData.location || { type: "Point", coordinates: [0, 0] },
+                lastLocationUpdate: profileData.lastLocationUpdate,
                 createdAt: profileData.createdAt
-
             }
-        })
-    } catch (error) {
-
-        console.log(error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Server Error"
-        });
-    }
-}
-
-
-export const getAllProfile = async (req,res)=>{
-    try {
-         const profile = await profileModel.find()
-        
-        return res.status(201).json({
-            message:"all profile fatch successfully",
-            profile,
-            success:true
-            
-        })
-    } catch (error) {
-        return res.status(500).json({
-            error,
-            
-        })
-    }
-   
-}
-
-export const profileDetail = async (req,res)=>{
-    const {id}=req.params;
-    const profile = await profileModel.findById(id)
-
-    if(!profile){
-        return res.status(404).json({
-            message:"user not found"
-        })
-    }
-
-    return res.status(200).json({
-        message:"profile found",
-        profile
-    })
-}
-
-export const isActive = async (req, res) => {
-    try {
-        const user = req.user;
-
-        const profile = await profileModel.findOne({
-            user: user._id
-        });
-
-        if (!profile) {
-            return res.status(404).json({
-                message: "Profile not found",
-                success: false,
-            });
-        }
-
-        profile.status =
-            profile.status === "active" ? "busy" : "active";
-
-        await profile.save();
-
-        return res.status(200).json({
-            message: `Status changed to ${profile.status}`,
-            success: true,
-            status: profile.status,
         });
 
     } catch (error) {
-        return res.status(500).json({
-            message: error.message,
-            success: false,
-        });
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Server error" });
     }
 };
 
+export const getAllProfile = async (req, res) => {
+    try {
+        // populate user so profile.user.fullname is available on the frontend
+        const profiles = await profileModel
+            .find()
+            .populate("user", "fullname email profileImage");
+
+        return res.status(200).json({
+            success: true,
+            message: "All profiles fetched successfully",
+            profile: profiles
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+export const profileDetail = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // populate user so detail page can show fullname/email
+        const profileData = await profileModel
+            .findById(id)
+            .populate("user", "fullname email profileImage");
+
+        if (!profileData) {
+            return res.status(404).json({ success: false, message: "Profile not found" });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile found",
+            profile: profileData
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+};
+
+export const isActive = async (req, res) => {
+    try {
+        const { latitude, longitude } = req.body;
+
+        const profileData = await profileModel.findOne({ user: req.user._id });
+
+        if (!profileData) {
+            return res.status(404).json({ success: false, message: "Profile not found" });
+        }
+
+        if (profileData.status === "busy") {
+            return res.status(400).json({
+                success: false,
+                message: "Cannot change status while busy"
+            });
+        }
+
+        const newStatus = profileData.status === "active" ? "offline" : "active";
+        profileData.status = newStatus;
+        profileData.isAvailable = newStatus === "active";
+
+        if (newStatus === "active" && latitude !== undefined && longitude !== undefined) {
+            profileData.location = {
+                type: "Point",
+                coordinates: [longitude, latitude]
+            };
+            profileData.lastLocationUpdate = Date.now();
+        }
+
+        await profileData.save();
+
+        return res.status(200).json({
+            success: true,
+            status: profileData.status,
+            message: `Status changed to ${profileData.status}`
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
+};

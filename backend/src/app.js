@@ -6,6 +6,7 @@ import { Strategy as GoogleStrategy} from 'passport-google-oauth20'
 import cors from "cors"
 import { config } from "./config/config.js";
 import getterRouter from './routes/getter.routes.js'
+import instantBookingRouter from './routes/instantBooking.route.js'
 
 const app = express()
 
@@ -41,5 +42,6 @@ Api
 app.use("/api/auth",authRouter)
 
 app.use("/api",getterRouter)
+app.use("/api/booking", instantBookingRouter)
 
 export default app;

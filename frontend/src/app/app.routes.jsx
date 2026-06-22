@@ -1,6 +1,6 @@
 import React from 'react'
 import { createBrowserRouter, Outlet } from 'react-router'
-import Register from '../features/auth/page/register'
+import Register from '../features/auth/page/Register'
 import Login from '../features/auth/page/Login'
 import Profile from '../features/serviceProvider/pages/Profile'
 import Portfolio from '../features/serviceProvider/pages/Portfolio'
@@ -10,6 +10,9 @@ import MyProfile from '../features/serviceProvider/pages/MyProfile'
 import PhotographerDashboard from '../features/serviceProvider/pages/PhotographerDashboard'
 import AllPhotograherDetails from '../features/serviceProvider/pages/AllPhotograherDetails'
 import ServiceProviderHome from '../features/serviceProvider/pages/ServiceProviderHome'
+import MyBookings from '../features/booking/page/MyBookings'
+import ProviderBookings from '../features/booking/page/ProviderBookings'
+import InstantBooking from '../features/booking/page/InstantBooking'
 import ProtectedRoute from '../features/auth/components/ProtectedRoute'
 import AppLayout from './AppLayout'
 
@@ -62,6 +65,30 @@ export const routes = createBrowserRouter([
             </ProtectedRoute>
         )
  
+    },
+    {
+        path: "/instant-booking",
+        element: (
+            <ProtectedRoute role="user">
+                <InstantBooking />
+            </ProtectedRoute>
+        )
+    },
+    {
+        path: "/my-bookings",
+        element: (
+            <ProtectedRoute role="user">
+                <MyBookings />
+            </ProtectedRoute>
+        )
+    },
+    {
+        path: "/provider-bookings",
+        element: (
+            <ProtectedRoute role="getter">
+                <ProviderBookings />
+            </ProtectedRoute>
+        )
     }
 ]
 }

@@ -52,7 +52,7 @@ const PhotographerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 pt-24">
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 py-6 sm:py-8 pt-20 sm:pt-24">
         {/* Greeting */}
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
@@ -83,12 +83,26 @@ const PhotographerDashboard = () => {
           <div className="bg-white border border-slate-200 rounded-xl p-4">
             <p className="text-[12px] font-medium text-slate-500 uppercase tracking-wide">Availability</p>
             <div className="flex items-center gap-2 mt-1">
-              <span className={`w-2.5 h-2.5 rounded-full ${profile?.status === 'active' ? 'bg-emerald-500' : 'bg-amber-500'} animate-pulse`}></span>
-              <p className={`text-2xl font-bold ${profile?.status === 'active' ? 'text-emerald-600' : 'text-amber-600'}`}>
-                {profile ? (profile.status === 'active' ? 'Active' : 'Busy') : 'Setup'}
+              <span className={`w-2.5 h-2.5 rounded-full ${
+                profile?.status === 'active' ? 'bg-emerald-500' : 
+                profile?.status === 'busy' ? 'bg-red-500' : 'bg-amber-500'
+              } animate-pulse`}></span>
+              <p className={`text-2xl font-bold ${
+                profile?.status === 'active' ? 'text-emerald-600' : 
+                profile?.status === 'busy' ? 'text-red-600' : 'text-amber-600'
+              }`}>
+                {profile ? (
+                  profile.status === 'active' ? 'Active' : 
+                  profile.status === 'busy' ? 'Busy' : 'Offline'
+                ) : 'Setup'}
               </p>
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">{profile ? (profile.status === 'active' ? 'Available for bookings' : 'Currently busy') : 'Profile pending'}</p>
+            <p className="text-[11px] text-slate-400 mt-1">
+              {profile ? (
+                profile.status === 'active' ? 'Available for bookings' : 
+                profile.status === 'busy' ? 'Currently busy' : 'Not accepting bookings'
+              ) : 'Profile pending'}
+            </p>
           </div>
         </div>
 
@@ -101,7 +115,9 @@ const PhotographerDashboard = () => {
                 <p className="text-[12px] text-slate-500 mt-0.5">
                   {profile.status === 'active'
                     ? 'You are currently accepting new bookings'
-                    : 'You are marked as busy and not accepting new bookings'}
+                    : profile.status === 'busy'
+                    ? 'You are marked as busy and not accepting new bookings'
+                    : 'You are offline and not accepting new bookings'}
                 </p>
               </div>
               <button
